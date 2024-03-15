@@ -88,8 +88,8 @@ def input_page():
                       'smoker': smoker, 'region': region, 'bmi': bmi, 'height_unit': height_unit}
         processed_input = preprocess_input(input_data)
         charges = loaded_model.predict([processed_input])[0]
-        st.write('## Estimated Charges')
-        st.write(f'Estimated Charges: {charges:.2f}', unsafe_allow_html=True)
+        st.write('## Estimated Claim Amount')
+        st.write(f'Estimated Claim Amount: {charges:.2f}', unsafe_allow_html=True)
         st.write('The following value is estimated based on historical data and predictive modeling techniques and may not represent the exact amount.')
 
 
