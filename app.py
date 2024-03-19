@@ -122,4 +122,3 @@ def input_page():
 # Main function
 def main():
     input_page()
-
