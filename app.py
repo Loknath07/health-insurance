@@ -1,7 +1,7 @@
 import streamlit as st
 import joblib
 
-model_path = '/home/msc1/Desktop/project/Best_model.joblib'
+model_path = 'Best_model.joblib'
 loaded_model = joblib.load(model_path)
 
 
