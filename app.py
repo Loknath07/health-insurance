@@ -1,5 +1,4 @@
 import streamlit as st
-from sklearn.ensemble import GradientBoostingRegressor
 import joblib
 
 model_path = 'Best_model.joblib'
@@ -52,9 +51,21 @@ def preprocess_input(input_data):
 
 # Input page
 def input_page():
-    st.title('Health Insurance Price Prediction')
+    st.title('HealthInsure Claim Amount Predictor')
     st.write('Please fill in the following details:')
-    age = st.number_input('Age', min_value=0, step=1)
+    
+    age = None
+    height = None
+    weight = None
+    
+    age_warning = ''
+    height_warning = ''
+    weight_warning = ''
+    
+    age = st.number_input('Age', min_value=0, step=1, value=age)
+    if age == 0:
+        age_warning = 'Please enter correct age.'
+        st.warning(age_warning)
     sex = st.radio('Sex', ('male', 'female'))
 
     # Side-by-side input for height unit and height
@@ -62,8 +73,14 @@ def input_page():
     with col1:
         height_unit = st.selectbox('Height Unit', ('meters', 'centimeters', 'feet'))
     with col2:
-        height = st.number_input('Height', min_value=0.0, step=0.01)
-    weight = st.number_input('Weight (in kg)', min_value=0.0, step=0.1)
+        height = st.number_input('Height', min_value=0.0, step=0.01, value=height)
+    if height == 0:
+        height_warning = 'Please enter correct height.'
+        st.warning(height_warning)
+    weight = st.number_input('Weight (in kg)', min_value=0.0, step=0.1, value=weight)
+    if weight == 0:
+        weight_warning = 'Please enter correct weight.'
+        st.warning(weight_warning)
 
     # Calculate BMI immediately after entering height and weight if height is not zero
     bmi = None
@@ -84,19 +101,25 @@ def input_page():
     region = st.selectbox('Region', ('southeast', 'southwest', 'northwest', 'northeast'))
 
     if st.button('Predict'):
-        input_data = {'age': age, 'sex': sex, 'height': height, 'weight': weight, 'children': children,
-                      'smoker': smoker, 'region': region, 'bmi': bmi, 'height_unit': height_unit}
-        processed_input = preprocess_input(input_data)
-        charges = loaded_model.predict([processed_input])[0]
-        st.write('## Estimated Claim Amount')
-        st.write(f'Estimated Claim Amount: {charges:.2f}', unsafe_allow_html=True)
-        st.write('The following value is estimated based on historical data and predictive modeling techniques and may not represent the exact amount.')
+        if age_warning or height_warning or weight_warning:
+            st.error('Please correct the following input errors:')
+            if age_warning:
+                st.error(age_warning)
+            if height_warning:
+                st.error(height_warning)
+            if weight_warning:
+                st.error(weight_warning)
+        else:
+            input_data = {'age': age, 'sex': sex, 'height': height, 'weight': weight, 'children': children,
+                          'smoker': smoker, 'region': region, 'bmi': bmi, 'height_unit': height_unit}
+            processed_input = preprocess_input(input_data)
+            charges = loaded_model.predict([processed_input])[0]
+            st.write('## Estimated Claim Amount')
+            st.write(f'Estimated Claim Amount: {charges:.2f}', unsafe_allow_html=True)
+            st.write('The following value is estimated based on historical data and predictive modeling techniques and may not represent the exact amount.')
 
 
 # Main function
 def main():
     input_page()
 
-
-if __name__ == '__main__':
-    main()
